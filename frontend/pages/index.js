@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import React from "react";
+import { useRouter } from "next/router";
+import { authService } from "../src/services/auth/authService";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [values, setvalues] = useState({
-    usuario: "italo",
-    senha: "safePassword",
+  const [values, setvalues] = React.useState({
+    usuario: 'omariosouto',
+    senha: 'safepassword',
   });
+
   function handleChange(event) {
     const fieldValue = event.target.value;
     const fieldName = event.target.name;
@@ -21,12 +23,20 @@ export default function HomeScreen() {
   return (
     <div>
       <h1>Login</h1>
-      <form onSubmit={(event) =>{
-        event.preventDefault();
-
-        router.push('auth-page-ssr')
-        router.push('auth-page-static')
-      }}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          authService
+            .login({
+              username: values.usuario,
+              password: values.senha,
+            })
+            .then(() => {
+              router.push('auth-page-ssr')
+              //router.push("auth-page-static");
+            })
+            .catch("Usuário ou senha invalidos");
+        }}>
         <input
           placeholder="Usuário"
           name="usuario"
